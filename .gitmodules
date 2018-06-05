@@ -1,0 +1,3 @@
+[submodule "Double_Pendulum"]
+	path = Double_Pendulum
+	url = https://github.com/stlows/Double_Pendulum.git
