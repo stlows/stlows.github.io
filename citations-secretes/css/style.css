@@ -1,0 +1,203 @@
+@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.css');
+
+
+*,
+*::after,
+*::before {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 10px;
+}
+
+body {
+    font-family: "Lato", sans-serif;
+}
+
+.title {
+    width: 100%;
+    text-align: center;
+    margin: 150px 0 30px 0;
+    font-size: 5rem;
+}
+
+.controls {
+    width: 100%;
+    text-align:center;
+    margin-bottom: 2.5rem;
+}
+
+.container {
+    width: 100%;
+    text-align: center;
+}
+
+.author,
+.timer-container {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+#idCitation {
+    position: fixed;
+    font-size: 2rem;
+    bottom: 1vh;
+    right:1vw;
+}
+
+.board {
+    display: inline-block;
+    clear: both;
+    margin-bottom: 20px;
+}
+.col {
+    width: 4rem;
+    margin: 0;
+    float:left;
+    border: 1px #222 solid;
+}
+
+.col:not(:first-child){
+    border-left: 0;
+}
+
+.col span {
+    display: block;
+    padding: .5rem;
+    line-height: 2rem;
+    font-size: 2rem;
+}
+
+.col span:hover {
+    cursor: pointer;
+}
+
+.col--reponses {
+    border-top: 0;
+    border-bottom: 0;
+}
+
+.col--reponses span {
+    height: 3.5rem;
+    border-bottom: 1px #222 solid;
+}
+
+.btn {
+    text-transform: uppercase;
+    display: inline-block;
+    border-radius: 10rem;
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    transition: all .2s;
+    text-decoration: none;
+    margin-right: 15px;
+}
+
+.btn-small {
+    font-size: 1.2rem;
+    padding: 10px 15px;
+}
+.btn:last-child {
+    margin-right: 0;
+}
+
+.btn--hover:hover{
+    cursor: pointer;
+    transform: translateY(-.3rem);
+    box-shadow: 0 5px 10px rgba(51, 51, 51, .2);
+}
+
+.btn:active {
+    transform: translateY(-.1rem);
+    box-shadow: 0 4px 8px rgba(51,51,51,.2);
+}
+
+.btn--white {
+    background-color: #fff;
+    color: #333;
+}
+
+.btn--grey {
+    background-color: #888;
+    color: #eee;
+}
+
+.btn--primary {
+    background-color: rgb(137, 247, 204);
+    color: #222;
+}
+.btn--secondary {
+    background-color: rgb(142, 187, 245);
+    color: #222;
+}
+.btn--info {
+    background-color: rgb(204, 170, 231);
+    color: #222;
+}
+
+.striked {
+    text-decoration: line-through;
+}
+
+.invalid-feedback {
+    text-align:center;
+    font-size:2em;
+    width: 100%;
+    margin-bottom: 2.5rem;
+    color: #FF0039;
+}
+
+.d-none {
+    display: none !important;
+}
+
+.not-active {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+  color: black;
+  background-color: rgb(166, 166, 166);
+}
+
+.quote {
+    text-align:center;
+    font-size:2em;
+    margin-bottom: 2.5rem;
+}
+
+#indice--selected {
+    background-color:rgb(255, 168, 0);
+}
+
+.space {
+    background-color: #000 !important;
+}
+
+.reponse:hover {
+    background-color:rgba(0, 0, 0, 0.1);
+}
+
+.board ::-moz-selection{
+    background-color:Transparent;
+    color:#000;
+}
+
+.board ::selection {
+    background-color:Transparent;
+    color:#000;
+}
+
+.no-cursor {
+    cursor:none;
+}
+
+#custom-cursor {
+    position:absolute;
+    pointer-events:none;
+    display: block;
+    padding: .5rem;
+    line-height: 2rem;
+    font-size: 2rem;
+}

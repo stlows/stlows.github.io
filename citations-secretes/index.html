@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet">
+
+        <title>Citations secrètes</title>
+
+        <link href="css/style.css" rel="stylesheet">
+
+    </head>
+
+    <body>
+
+        <div id="custom-cursor" class="d-none">A</div>
+
+        <div class="title">
+            Citations secrètes
+        </div>
+
+        <div class="controls">
+            <!-- Bouton en commentaire vu que l'API nécessite de rouler le site sur un serveur
+            <a id="btn-new-quote" href="#" type="button" class="btn btn--primary btn--hover">Nouvelle citation (API)</a>
+            -->
+            <a id="btn-new-quote-local" href="#" type="button" class="btn btn--primary btn--hover">Nouvelle citation</a>
+            <a href="#" class="btn btn--info btn--hover" id="btn-get-indice">Indice</a>
+            <a href="#" class="btn btn--secondary btn--hover">Valider</a>
+        </div>
+
+        <div id="feedback" class="invalid-feedback"></div>
+        <div class="quote">
+            <div id="spinner" class="d-none">
+                <span class='fa fa-spinner fa-spin'></span>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="author">
+                <b>Auteur: </b><span id='auteur'></span>
+            </div>
+            <div class="timer-container">
+                <b>Temps: </b><span id='timer'>0:00</span>
+            </div>
+            <div class="board">
+
+                <div class="indices" id='indices'></div>
+
+                <div class="reponses" id='reponses'></div>
+
+            </div>
+            <div class="controls">
+                <a id="btn-change-width" href="#" type="button" class="btn btn--grey btn--hover btn-small">Changer largeur</a>
+            </div>
+        </div>
+
+        <span id='idCitation'></span>
+
+        <script src="js/jquery-3.2.1.min.js"></script>
+        <script src="js/citations.js"></script>
+        <script src="js/script.js"></script>
+    </body>
+</html>
