@@ -19,7 +19,6 @@ $(function(){
     $('#btn-change-width').click(function(e){
         e.preventDefault();
         nbColonnes = prompt('Quelle largeur?');
-        incrementCounter();
         initBoard();
     });
 
@@ -27,7 +26,7 @@ $(function(){
         let random_number = Math.random() * (max-min) + min;
         return Math.floor(random_number);
     }
-    
+
     $('#btn-new-quote-local').click(function(e){
         e.preventDefault();
         counter = generateRandomNumber(0, citations.length);
@@ -41,8 +40,17 @@ $(function(){
 
     $('#btn-get-indice').click(function(e){
         e.preventDefault();
-        spanIndice
+        generateNewIndice();
     })
+
+    $('#btn-validate').click(function(e){
+        e.preventDefault();
+        solutionIsValid();
+    });
+
+    $('#success-message').click(function(){
+        $(this).fadeOut();
+    });
 
     function initHeader(){
         document.getElementById('auteur').innerHTML = citations[counter].auteur;
@@ -112,16 +120,20 @@ $(function(){
         var id = setInterval(function(){
             $('#timer').html(getTime(timeStamp));
             timeStamp++;
-        }, 1000)
+        }, 1000);
         return id;
     }
+
     function getTime(sec){
         if(sec < 60) return "0:" + sec.toString().padStart(2, '0');
         else if(sec < 3600) return Math.floor(sec/60).toString() + ':' + (sec % 60).toString().padStart(2, '0');
     }
 
-    function initEvents()
-    {
+    /**
+     * events that need to be defined only after the board rendering
+     * @return null
+     */
+    function initEvents(){
         var cursor = document.getElementById('custom-cursor');
         $("body").mousemove(function(e) {
             cursor.style.left = e.pageX-12+"px";
@@ -131,27 +143,30 @@ $(function(){
         $('.indice').mousedown(function(e){
             e.preventDefault();
 
-            $("#custom-cursor").html($(this).html());
-            $("#custom-cursor").removeClass("d-none");
-
-            $('.indice').attr("id","");
             if (!$(this).hasClass('striked')) {
+                $("#custom-cursor").html($(this).html());
+                $("#custom-cursor").removeClass("d-none");
+
+                $('.indice').attr("id","");
                 $(this).attr("id","indice--selected");
                 clickedIndice = $(this);
             }
-            
+
         });
 
         $('.reponse').mouseup(function(e){
             e.preventDefault();
             if (!$(this).hasClass('space')){
                 var reponseParentID = $(this).parent().attr("id");
-                var reponseNb = reponseParentID.substr(reponseParentID.length - 1);
+                var reponseSplitted = reponseParentID.split('-');
+                var reponseNb = reponseSplitted[reponseSplitted.length - 1];
 
                 if ($.trim($(this).html())!='') { // if the element is not empty
                     // un-strike the indice
                     var colIndices = $("#col--indices-"+reponseNb).children();
+                    console.log(reponseNb);
                     for (i = 0; i < colIndices.length ; i++){
+                        console.log(colIndices[i].innerHTML);
                         if (colIndices[i].innerHTML == $(this).html()){
                             if (colIndices[i].classList.contains('striked')) {
                                 colIndices[i].classList.remove('striked');
@@ -177,6 +192,15 @@ $(function(){
 
         $("body").mouseup(function(e){
             $("#custom-cursor").addClass("d-none");
+        });
+
+        $('.reponse').on('DOMSubtreeModified',function(e){
+            if (solutionIsValid()){
+                clearInterval(timerId);
+                $('#success-message').animate({
+                    height: 'toggle'
+                }, 1000, function() {});
+            }
         });
 
     }
@@ -214,6 +238,33 @@ $(function(){
             }
         }
         return maxIndices;
+    }
+
+    function generateNewIndice(){
+        var rndIndex, rndValue;
+        var colIndex, rowIndex;
+        var indices, indice, reponse;
+        if (gridIsCompleted()) {
+            return;
+        }
+        do {
+            do {
+                rndIndex = Math.floor(Math.random() * citations[counter].citation.length);
+                rndValue = citations[counter].citation[rndIndex].toUpperCase();
+                colIndex = rndIndex % nbColonnes;
+                rowIndex = Math.floor(rndIndex / nbColonnes);
+                reponse = $('#col--reponses-'+colIndex).children()[rowIndex];
+            } while(rndValue == " " || reponse.classList.contains('space') || reponse.innerHTML.length);
+            indices = $('#col--indices-'+colIndex).children();
+            for (let i = 0; i < indices.length; i++){
+                if (indices[i].innerHTML == rndValue
+                    && !indices[i].classList.contains('striked')) {
+                    indice = indices[i];
+                }
+            }
+        } while (!indice || indice.classList.contains('striked'));
+        reponse.innerHTML = indice.innerHTML;
+        indice.classList.add('striked');
     }
 
     function getQuote(){
@@ -285,5 +336,36 @@ $(function(){
             return true;
         }
         return false;
+    }
+
+    function gridIsCompleted() {
+        var col;
+        for(let i=0; i < nbColonnes; i++){
+            colChildren = $('#col--reponses-'+i).children();
+            for(let j=0; j < colChildren.length; j++){
+                if (!colChildren[j].classList.contains('space')){
+                    if (colChildren[j].innerHTML.length === 0){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    function solutionIsValid(){
+        var col;
+        for(let i=0; i < nbColonnes; i++){
+            colReponses = $('#col--reponses-'+i).children();
+            for(let j=0; j < colReponses.length; j++){
+                if (!colReponses[j].classList.contains('space')){
+                    if (colReponses[j].innerHTML.length === 0
+                    || colReponses[j].innerHTML != citations[counter].citation[j*nbColonnes+i].toUpperCase()){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 });
