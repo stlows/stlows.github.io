@@ -1,7 +1,6 @@
 $(function(){
 
     var counter = generateRandomNumber(0, citations.length);
-    console.log(citations[counter].citation)
     var timerId = null;
 
     var clickedIndice = null;
@@ -33,6 +32,27 @@ $(function(){
         initBoard();
     });
 
+    $('#btn-custom-quote').click(function(e){
+        e.preventDefault();
+        $('#custom-quote').animate({
+            height: 'toggle'
+        }, 200, function() {});
+    });
+
+    $('#btn-enter-custom-quote').click(function(e){
+        e.preventDefault();
+        var quote = formatQuote($('#custom-quote-input').val());
+        counter = citations.push({
+            'auteur' : 'Vous!',
+            'citation' : quote
+        }) - 1;
+        initBoard();
+        $('#custom-quote').animate({
+            height: 'toggle'
+        }, 200, function() {});
+        $('#custom-quote-input').val('');
+    });
+
     $('#btn-new-quote').click(function(e){
         e.preventDefault();
         getQuote();
@@ -45,7 +65,7 @@ $(function(){
 
     $('#btn-validate').click(function(e){
         e.preventDefault();
-        solutionIsValid();
+        validate();
     });
 
     $('#success-message').click(function(){
@@ -164,9 +184,7 @@ $(function(){
                 if ($.trim($(this).html())!='') { // if the element is not empty
                     // un-strike the indice
                     var colIndices = $("#col--indices-"+reponseNb).children();
-                    console.log(reponseNb);
                     for (i = 0; i < colIndices.length ; i++){
-                        console.log(colIndices[i].innerHTML);
                         if (colIndices[i].innerHTML == $(this).html()){
                             if (colIndices[i].classList.contains('striked')) {
                                 colIndices[i].classList.remove('striked');
@@ -176,6 +194,7 @@ $(function(){
                     }
                 }
 
+                $(this).removeClass('reponse--error');
                 $(this).empty();
 
                 if (clickedIndice) {
@@ -241,30 +260,41 @@ $(function(){
     }
 
     function generateNewIndice(){
-        var rndIndex, rndValue;
-        var colIndex, rowIndex;
-        var indices, indice, reponse;
-        if (gridIsCompleted()) {
+        if (solutionIsValid()){
             return;
         }
+        var rndIndex, rndValue;
+        var colIndex, rowIndex;
+        var indices, indice, reponses, reponse;
+        var rowCounter=0, colCounter=0;
         do {
             do {
                 rndIndex = Math.floor(Math.random() * citations[counter].citation.length);
                 rndValue = citations[counter].citation[rndIndex].toUpperCase();
                 colIndex = rndIndex % nbColonnes;
                 rowIndex = Math.floor(rndIndex / nbColonnes);
-                reponse = $('#col--reponses-'+colIndex).children()[rowIndex];
-            } while(rndValue == " " || reponse.classList.contains('space') || reponse.innerHTML.length);
+                reponses = $('#col--reponses-'+colIndex).children();
+                reponse = reponses[rowIndex];
+            } while(rndValue == " " || reponse.classList.contains('space') || reponse.innerHTML == rndValue);
             indices = $('#col--indices-'+colIndex).children();
+            indicesCounts = countSames(indices);
             for (let i = 0; i < indices.length; i++){
-                if (indices[i].innerHTML == rndValue
-                    && !indices[i].classList.contains('striked')) {
-                    indice = indices[i];
+                if (indices[i].innerHTML == rndValue) {
+                    if (!indices[i].classList.contains('striked')) {
+                        indice = indices[i];
+                    } else if (indicesCounts[indices[i].innerHTML] == 1) {
+                        indice = indices[i];
+                    } else {
+                        indicesCounts[indices[i].innerHTML]--;
+                    }
                 }
             }
-        } while (!indice || indice.classList.contains('striked'));
-        reponse.innerHTML = indice.innerHTML;
-        indice.classList.add('striked');
+        } while (!indice);
+        if (colCounter != reponses.length && rowCounter != indices.length) {
+            reponse.innerHTML = indice.innerHTML;
+            reponse.classList.remove('reponse--error');
+            indice.classList.add('striked');
+        }
     }
 
     function getQuote(){
@@ -324,7 +354,7 @@ $(function(){
         // replaces double spaces by simple space
         quote = quote.replace(/ +(?= )/g,'');
 
-        return quote;
+        return latinise(quote);
     }
 
     function sameColumn(indice, reponse) {
@@ -368,4 +398,53 @@ $(function(){
         }
         return true;
     }
-});
+
+    function validate(){
+        var col;
+        var errors = [];
+        for(let i=0; i < nbColonnes; i++){
+            colReponses = $('#col--reponses-'+i).children();
+            for(let j=0; j < colReponses.length; j++){
+                if (!colReponses[j].classList.contains('space') && colReponses[j].innerHTML != ''){
+                    if (colReponses[j].innerHTML != citations[counter].citation[j*nbColonnes+i].toUpperCase()){
+                        errors.push({i,j});
+                    }
+                }
+            }
+        }
+        errors.forEach(
+            function(x){
+                $('#col--reponses-'+x['i'])
+                    .children()[x['j']]
+                    .classList
+                    .add('reponse--error');
+            }
+        );
+    }
+
+    function countSames(group){
+        var counts = {};
+        group.each(function(k,v) { counts[v.innerHTML] = (counts[v.innerHTML] || 0)+1; });
+        return counts;
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // to remove accents.  Taken from
+    // https://stackoverflow.com/a/8490728/7507867
+    var latinise = (function () {
+      var in_chrs   = 'àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ',
+          out_chrs  = 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY',
+          chars_rgx = new RegExp('[' + in_chrs + ']', 'g'),
+          transl    = {}, i,
+          lookup    = function (m) { return transl[m] || m; };
+
+      for (i=0; i<in_chrs.length; i++) {
+        transl[ in_chrs[i] ] = out_chrs[i];
+      }
+
+      return function (s) { return s.replace(chars_rgx, lookup); }
+    })();
+    });
