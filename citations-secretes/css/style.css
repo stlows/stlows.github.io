@@ -119,6 +119,11 @@ body {
     color: #333;
 }
 
+.btn--light {
+    background-color: #ececec;
+    color: #333;
+}
+
 .btn--grey {
     background-color: #888;
     color: #eee;
@@ -130,6 +135,10 @@ body {
 }
 .btn--secondary {
     background-color: rgb(142, 187, 245);
+    color: #222;
+}
+.btn--warning {
+    background-color: rgb(241, 173, 37);
     color: #222;
 }
 .btn--info {
@@ -215,4 +224,22 @@ body {
 }
 #success-text {
   margin-top:35vh;
+}
+
+.reponse--error {
+    color:rgb(255, 0, 0);
+    background-color:rgb(255, 0, 0, 0.2);
+}
+
+.input {
+    padding:5px;
+    border:2px solid #ccc;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    width:40%;
+    height:10vh;
+}
+
+.input:focus {
+    border-color:#333;
 }

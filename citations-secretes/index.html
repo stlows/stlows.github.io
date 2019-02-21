@@ -24,9 +24,16 @@
             <!-- Bouton en commentaire vu que l'API nécessite de rouler le site sur un serveur
             <a id="btn-new-quote" href="#" type="button" class="btn btn--primary btn--hover">Nouvelle citation (API)</a>
             -->
-            <a id="btn-new-quote-local" href="#" type="button" class="btn btn--primary btn--hover">Nouvelle citation</a>
+            <a id="btn-custom-quote" href="#" type="button" class="btn btn--primary btn--hover">Citation personnalisée</a>
+            <a id="btn-new-quote-local" href="#" type="button" class="btn btn--warning btn--hover">Nouvelle citation</a>
             <a id="btn-get-indice" href="#" class="btn btn--info btn--hover">Indice</a>
             <a id="btn-validate" href="#" class="btn btn--secondary btn--hover">Valider</a>
+        </div>
+
+        <div class="controls" id="custom-quote" style="display:none;">
+            <textarea id='custom-quote-input' class='input'></textarea>
+            <br /><br />
+            <a id="btn-enter-custom-quote" href="#" class="btn btn--light btn--hover btn-small">Entrer</a>
         </div>
 
         <div id="feedback" class="invalid-feedback"></div>
