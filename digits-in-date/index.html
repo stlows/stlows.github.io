@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Different digits in a date</title>
+  <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+  <div id="app">
+    <label for="dateFrom">Date from: </label><input type="date" id="dateFrom" v-model="dateFromI">
+		<label for="dateTo">Date to: </label><input type="date" id="dateTo" v-model="dateToI">
+
+		<table>
+				<thead>
+					<tr>
+						<th># digits</th>
+						<th># dates</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="i in 8">
+						<td>{{ i }}</td>
+						<td>{{ histogram[i] }}</td>
+					</tr>
+				</tbody>
+			</table>
+
+		<label for="filteredData">Filter: </label><input id="filteredData" v-model="filteredData">
+
+		<button v-on:click="showTable = !showTable">{{ showTable ? "Hide" : "Show" }} data</button>
+
+		<table v-if="showTable">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Unique</th>
+					<th># digits</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-if="filteredDates.length == 0">
+					<td colspan="3">Aucune donnée</td>
+				</tr>
+				<tr v-else v-for="d in filteredDates">
+					<td>{{ d.dateStr }}</td>
+					<td>{{ uniqueChar(d.dateStr) }}</td>
+					<td>{{ uniqueChar(d.dateStr).length }}</td>
+				</tr>
+			</tbody>
+		</table>
+  </div>
+
+  <script>
+		
+		var app = new Vue({
+      el: '#app',
+      data: {
+        dateFromI: '2019-02-01',
+				dateToI: '2100-12-31',
+				showTable: true,
+				filteredData: 2,				
+				dateToString: function(d){
+					return (d.getYear() + 1900).toString() + (d.getMonth() + 1).toString().padStart(2, "0") + d.getDate().toString().padStart(2, "0");
+				},
+				daysInMonth: function(month,year) {
+  				return new Date(year, month, 0).getDate();
+				},
+				onlyUnique: function(value, index, self) { 
+    			return self.indexOf(value) === index;
+				},
+				uniqueChar: function(str){
+					return str.split("").filter( this.onlyUnique );
+				}
+			},
+	  	computed: {
+				dateFrom: function () {
+					return new Date(this.dateFromI.substr(0,4), this.dateFromI.substr(5,2) - 1, this.dateFromI.substr(8,2))
+				},
+				dateTo: function () {
+					return new Date(this.dateToI.substr(0,4), this.dateToI.substr(5,2) - 1, this.dateToI.substr(8,2))
+				},
+				dates: function() {
+					var r = [];
+					for(var y = this.dateFrom.getYear(); y <= this.dateTo.getYear(); y++){
+						for(var m = 0; m < 12; m++){
+							for(var d = 1; d <= this.daysInMonth(m + 1, y ); d++){
+								var date = new Date(y + 1900, m, d)
+								r.push({
+										date: date,
+										dateStr: this.dateToString(date)
+									});
+							}
+						}
+					}	
+					return r;
+				},
+				filteredDates: function(){
+					return this.dates.filter(d => this.uniqueChar(d.dateStr).length == this.filteredData);
+				},
+				histogram: function(){
+					var histo = {};
+					for(var i = 1; i <= 8; i++){
+						histo[i] = this.dates.filter(d => this.uniqueChar(d.dateStr).length === i).length;
+					}
+					return histo;
+				}
+			}
+    })
+  </script>
+</body>
+</html>
