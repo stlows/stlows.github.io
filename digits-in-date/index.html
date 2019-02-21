@@ -3,6 +3,7 @@
 <head>
   <title>Different digits in a date</title>
   <script src="https://unpkg.com/vue"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="app">
@@ -13,40 +14,51 @@
 				<thead>
 					<tr>
 						<th># digits</th>
-						<th># dates</th>
+						<th style="width: 500px"># dates</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="i in 8">
 						<td>{{ i }}</td>
-						<td>{{ histogram[i] }}</td>
+						<td v-bind:style="styleObject(histogram[i])">{{ histogram[i] }}</td>
 					</tr>
 				</tbody>
 			</table>
 
-		<label for="filteredData">Filter: </label><input id="filteredData" v-model="filteredData">
-
+		
 		<button v-on:click="showTable = !showTable">{{ showTable ? "Hide" : "Show" }} data</button>
 
-		<table v-if="showTable">
-			<thead>
-				<tr>
-					<th>Date</th>
-					<th>Unique</th>
-					<th># digits</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr v-if="filteredDates.length == 0">
-					<td colspan="3">Aucune donnée</td>
-				</tr>
-				<tr v-else v-for="d in filteredDates">
-					<td>{{ d.dateStr }}</td>
-					<td>{{ uniqueChar(d.dateStr) }}</td>
-					<td>{{ uniqueChar(d.dateStr).length }}</td>
-				</tr>
-			</tbody>
-		</table>
+		<div v-if="showTable">
+
+			<label for="recordsToShowFrom">Show results from: </label><input id="recordsToShowFrom" v-model="recordsToShowFrom">
+			<label for="recordsToShowTo">to: </label><input id="recordsToShowTo" v-model="recordsToShowTo">
+
+			<p>Total filtered dates: {{ filteredDates.length }}</p>
+	
+			<table id="datesTable">
+				<thead>
+					<tr>
+						<th></th>
+						<th>Date</th>
+						<th>Unique</th>
+						<th># digits<br><label for="filterNoDigits">Filter: </label><input id="filterNoDigits" v-model="filterNoDigits"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-if="filteredDates.length == 0">
+						<td colspan="3">Aucune donnée</td>
+					</tr>
+					<tr v-else v-for="(d, i) in filteredDates.slice(recordsToShowFrom - 1,recordsToShowTo)">
+						<td>{{ i + 1 }}</td>
+						<td>{{ datePretty(d) }}</td>
+						<td>{{ uniqueChar(d).sort() }}</td>
+						<td>{{ uniqueChar(d).length }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		
   </div>
 
   <script>
@@ -57,15 +69,29 @@
         dateFromI: '2019-02-01',
 				dateToI: '2100-12-31',
 				showTable: true,
-				filteredData: 2,				
+				filterNoDigits: 2,
+				recordsToShowFrom: 1,
+				recordsToShowTo: 200,
+				styleObject: function(val) {
+					var count = this.dates.length;
+					var base = 700;
+					var width = Math.floor(base * val / count);
+					return {
+						boxShadow: "inset " + width + "px 0 blue",
+						color: width > 275 ? "white" : "black"
+					}
+				},		
 				dateToString: function(d){
 					return (d.getYear() + 1900).toString() + (d.getMonth() + 1).toString().padStart(2, "0") + d.getDate().toString().padStart(2, "0");
 				},
+				datePretty: function(str){
+					return str.substr(0,4) + "-" + str.substr(4,2) + "-" + str.substr(6,2);
+				},
 				daysInMonth: function(month,year) {
-  				return new Date(year, month, 0).getDate();
+  					return new Date(year, month, 0).getDate();
 				},
 				onlyUnique: function(value, index, self) { 
-    			return self.indexOf(value) === index;
+    				return self.indexOf(value) === index;
 				},
 				uniqueChar: function(str){
 					return str.split("").filter( this.onlyUnique );
@@ -83,28 +109,28 @@
 					for(var y = this.dateFrom.getYear(); y <= this.dateTo.getYear(); y++){
 						for(var m = 0; m < 12; m++){
 							for(var d = 1; d <= this.daysInMonth(m + 1, y ); d++){
-								var date = new Date(y + 1900, m, d)
-								r.push({
-										date: date,
-										dateStr: this.dateToString(date)
-									});
+								r.push((y + 1900).toString() + (m + 1).toString().padStart(2, "0") + d.toString().padStart(2, "0"));
 							}
 						}
 					}	
 					return r;
 				},
 				filteredDates: function(){
-					return this.dates.filter(d => this.uniqueChar(d.dateStr).length == this.filteredData);
+					if(this.filterNoDigits === "")
+						return this.dates;
+					return this.dates.filter(d => 
+						this.uniqueChar(d).length == this.filterNoDigits
+					);
 				},
 				histogram: function(){
 					var histo = {};
 					for(var i = 1; i <= 8; i++){
-						histo[i] = this.dates.filter(d => this.uniqueChar(d.dateStr).length === i).length;
+						histo[i] = this.dates.filter(d => this.uniqueChar(d).length === i).length;
 					}
 					return histo;
 				}
 			}
-    })
+    })	
   </script>
 </body>
 </html>

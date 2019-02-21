@@ -1,0 +1,25 @@
+* {
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+input {
+    display: inline-block;
+    margin: 5px 0;
+}
+button {
+    display: block;
+}
+
+table {
+    border-collapse: collapse;
+    width: 50%;
+    text-align: center;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
