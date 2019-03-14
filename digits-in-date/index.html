@@ -7,7 +7,10 @@
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 </head>
 <body>
+
   <div id="app">
+	<h1>Digits in date</h1>
+
 	<div class="form-group">
 		<label for="dateFrom">Date from: </label>
 		<input type="date" id="dateFrom" v-model="dateFromI">
@@ -50,12 +53,12 @@
 					<th></th>
 					<th>Date</th>
 					<th>Unique</th>
-					<th># digits<br><label for="filterNoDigits">Filter: </label><input id="filterNoDigits" v-model="filterNoDigits"></th>
+					<th># digits<br><label for="filterNoDigits">Filter: </label><input type="number" min="0" max="8" id="filterNoDigits" v-model="filterNoDigits"></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr v-if="filteredDates.length == 0">
-					<td colspan="3">Aucune donnée</td>
+					<td colspan="4">Aucune donnée</td>
 				</tr>
 				<tr v-else v-for="(d, i) in filteredDates.slice(recordsToShowFrom - 1,recordsToShowTo)">
 					<td>{{ i + 1 }}</td>
