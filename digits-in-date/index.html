@@ -31,16 +31,18 @@
 		</tbody>
 	</table>
 
-		
-	<button v-on:click="showTable = !showTable">{{ showTable ? "Hide" : "Show" }} data</button>
+	<span class="center">Total dates: <b>{{ dates.length }}</b></span>
 
-	<div v-if="showTable">
+	<hr>
+	<button class="center" v-on:click="showData = !showData">{{ showData ? "Hide" : "Show" }} data</button>
+	<hr>
+
+	<div v-if="showData">
 
 		<label for="recordsToShowFrom">Show results from: </label><input type="number" min="1" id="recordsToShowFrom" v-model="recordsToShowFrom">
 		<label for="recordsToShowTo">to: </label><input type="number" min="1" id="recordsToShowTo" v-model="recordsToShowTo">
 
-		<p>Total dates: {{ dates.length }}</p>
-		<p>Total filtered dates: {{ filteredDates.length }}</p>
+		<p>Total filtered dates: <b>{{ filteredDates.length }}</b></p>
 
 		<table id="datesTable">
 			<thead>
@@ -74,7 +76,7 @@
       data: {
         dateFromI: '2019-02-01',
 				dateToI: '2100-12-31',
-				showTable: true,
+				showData: true,
 				filterNoDigits: 2,
 				recordsToShowFrom: 1,
 				recordsToShowTo: 200,
@@ -83,8 +85,7 @@
 					var base = 700;
 					var width = Math.floor(base * val / count);
 					return {
-						boxShadow: "inset " + width + "px 0 #c6ccf1",
-						color: width > 275 ? "#eee" : "#222"
+						boxShadow: "inset " + width + "px 0 #c6ccf1"
 					}
 				},		
 				dateToString: function(d){

@@ -12,6 +12,10 @@ body {
     padding: 30px;
 }
 
+#app {
+    width: 50%;
+}
+
 input {
     display: inline-block;
     margin: 5px 0;
@@ -23,14 +27,35 @@ input[type=date]{
     border-radius: 3px;
 }
 
-button {
-    display: block;
-}
-
 table {
     /*border-collapse: collapse;*/
-    width: 50%;
+    width:100%;
     text-align: center;
+    border:1px #222 solid;
+}
+
+button {
+    display: block;
+    padding:10px 25px;
+    border: 1px #c6ccf1 solid;
+    background-color: #eee;
+    border-radius: 500px;
+    font-size: 1.15em;
+    text-transform: uppercase;
+}
+
+.center {
+    margin-right: auto;
+    margin-left: auto;
+}
+
+hr {
+    margin: 15px auto;
+    width: 95%;
+}
+
+button:active{
+    outline: none;
 }
 
 table, th, td {
