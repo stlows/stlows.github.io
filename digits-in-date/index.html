@@ -4,61 +4,67 @@
   <title>Different digits in a date</title>
   <script src="https://unpkg.com/vue"></script>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 </head>
 <body>
   <div id="app">
-    <label for="dateFrom">Date from: </label><input type="date" id="dateFrom" v-model="dateFromI">
-		<label for="dateTo">Date to: </label><input type="date" id="dateTo" v-model="dateToI">
-
-		<table>
-				<thead>
-					<tr>
-						<th># digits</th>
-						<th style="width: 500px"># dates</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="i in 8">
-						<td>{{ i }}</td>
-						<td v-bind:style="styleObject(histogram[i])">{{ histogram[i] }}</td>
-					</tr>
-				</tbody>
-			</table>
+	<div class="form-group">
+		<label for="dateFrom">Date from: </label>
+		<input type="date" id="dateFrom" v-model="dateFromI">
+	</div>
+	<div class="form-group">
+		<label for="dateTo">Date to: </label>
+		<input type="date" id="dateTo" v-model="dateToI">
+	</div>
+	<table>
+		<thead>
+			<tr>
+				<th># digits</th>
+				<th style="width: 500px"># dates</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr v-for="i in 8">
+				<td>{{ i }}</td>
+				<td v-bind:style="styleObject(histogram[i])">{{ histogram[i] }}</td>
+			</tr>
+		</tbody>
+	</table>
 
 		
-		<button v-on:click="showTable = !showTable">{{ showTable ? "Hide" : "Show" }} data</button>
+	<button v-on:click="showTable = !showTable">{{ showTable ? "Hide" : "Show" }} data</button>
 
-		<div v-if="showTable">
+	<div v-if="showTable">
 
-			<label for="recordsToShowFrom">Show results from: </label><input id="recordsToShowFrom" v-model="recordsToShowFrom">
-			<label for="recordsToShowTo">to: </label><input id="recordsToShowTo" v-model="recordsToShowTo">
+		<label for="recordsToShowFrom">Show results from: </label><input type="number" min="1" id="recordsToShowFrom" v-model="recordsToShowFrom">
+		<label for="recordsToShowTo">to: </label><input type="number" min="1" id="recordsToShowTo" v-model="recordsToShowTo">
 
-			<p>Total filtered dates: {{ filteredDates.length }}</p>
-	
-			<table id="datesTable">
-				<thead>
-					<tr>
-						<th></th>
-						<th>Date</th>
-						<th>Unique</th>
-						<th># digits<br><label for="filterNoDigits">Filter: </label><input id="filterNoDigits" v-model="filterNoDigits"></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-if="filteredDates.length == 0">
-						<td colspan="3">Aucune donnée</td>
-					</tr>
-					<tr v-else v-for="(d, i) in filteredDates.slice(recordsToShowFrom - 1,recordsToShowTo)">
-						<td>{{ i + 1 }}</td>
-						<td>{{ datePretty(d) }}</td>
-						<td>{{ uniqueChar(d).sort() }}</td>
-						<td>{{ uniqueChar(d).length }}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		
-		
+		<p>Total dates: {{ dates.length }}</p>
+		<p>Total filtered dates: {{ filteredDates.length }}</p>
+
+		<table id="datesTable">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Date</th>
+					<th>Unique</th>
+					<th># digits<br><label for="filterNoDigits">Filter: </label><input id="filterNoDigits" v-model="filterNoDigits"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-if="filteredDates.length == 0">
+					<td colspan="3">Aucune donnée</td>
+				</tr>
+				<tr v-else v-for="(d, i) in filteredDates.slice(recordsToShowFrom - 1,recordsToShowTo)">
+					<td>{{ i + 1 }}</td>
+					<td>{{ datePretty(d) }}</td>
+					<td>{{ uniqueChar(d).sort() }}</td>
+					<td>{{ uniqueChar(d).length }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+			
   </div>
 
   <script>
@@ -77,8 +83,8 @@
 					var base = 700;
 					var width = Math.floor(base * val / count);
 					return {
-						boxShadow: "inset " + width + "px 0 blue",
-						color: width > 275 ? "white" : "black"
+						boxShadow: "inset " + width + "px 0 #c6ccf1",
+						color: width > 275 ? "#eee" : "#222"
 					}
 				},		
 				dateToString: function(d){

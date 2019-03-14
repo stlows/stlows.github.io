@@ -6,20 +6,54 @@
     -webkit-box-sizing: border-box;
 }
 
+body {
+    font-family: 'Lato', sans-serif;
+    color: #222;
+    padding: 30px;
+}
+
 input {
     display: inline-block;
     margin: 5px 0;
+    font-family: 'Lato', sans-serif;
 }
+
+input[type=date]{
+    border: 1px #c6ccf1 solid;
+    border-radius: 3px;
+}
+
 button {
     display: block;
 }
 
 table {
-    border-collapse: collapse;
+    /*border-collapse: collapse;*/
     width: 50%;
     text-align: center;
 }
 
 table, th, td {
-    border: 1px solid black;
+    border: none;
+}
+
+table tr{
+    height:25px;
+}
+
+table tr:nth-child(2n){
+    background-color: #eee
+}
+
+table th {
+    font-size: 1.2em;
+    background-color: #c6ccf1;
+}
+
+.form-group {
+    display: block;
+}
+.form-group label{
+    display:inline-block;
+    width: 90px;
 }
