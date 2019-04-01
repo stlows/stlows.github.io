@@ -137,7 +137,7 @@ var app = new Vue({
     difficulty: 3,
     type: "CH",
     timeoutId: null,
-    delay: 300,
+    delay: 500,
     showSettings: false
   },
   methods: {
@@ -383,24 +383,6 @@ var app = new Vue({
         this.otherPlayerId()
       );
       if (optimal === null) {
-        if (this.count() === 6) {
-          var availableTiles = this.availableTiles(boardCopy);
-          for (var x = 0; x < availableTiles.length; x++) {
-            var tile = availableTiles[x];
-
-            if (
-              tile.i !== 2 &&
-              tile.j !== 2 &&
-              this.board[tile.i][tile.j] === ""
-            ) {
-              this.debug(
-                "Bot played optimally to maybe win, if oponent makes mistake"
-              );
-              this.setTile(tile.i, tile.j);
-              return;
-            }
-          }
-        }
         this.botLevel2Move();
       } else {
         this.debug("Bot played optimally");
