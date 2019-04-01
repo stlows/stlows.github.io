@@ -25,7 +25,6 @@ function isSameBoard(board1, bord2) {
 }
 function optimalMove(board, myId, oponentId) {
   // Si on commence
-  console.log({ board, myId, oponentId });
   // 1st move
   if (isSameBoard(board, [["", "", ""], ["", "", ""], ["", "", ""]]))
     return { i: 1, j: 1 };
@@ -134,7 +133,7 @@ var app = new Vue({
     logs: [],
     disableAll: false,
     currentPlayerId: 0,
-    myDebug: true,
+    myDebug: false,
     difficulty: 3,
     type: "CH",
     timeoutId: null,
@@ -383,8 +382,25 @@ var app = new Vue({
         this.currentPlayerId,
         this.otherPlayerId()
       );
-      console.log(optimal);
       if (optimal === null) {
+        if (this.count() === 6) {
+          var availableTiles = this.availableTiles(boardCopy);
+          for (var x = 0; x < availableTiles.length; x++) {
+            var tile = availableTiles[x];
+
+            if (
+              tile.i !== 2 &&
+              tile.j !== 2 &&
+              this.board[tile.i][tile.j] === ""
+            ) {
+              this.debug(
+                "Bot played optimally to maybe win, if oponent makes mistake"
+              );
+              this.setTile(tile.i, tile.j);
+              return;
+            }
+          }
+        }
         this.botLevel2Move();
       } else {
         this.debug("Bot played optimally");
