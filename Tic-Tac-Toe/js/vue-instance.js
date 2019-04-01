@@ -464,5 +464,8 @@ var app = new Vue({
       }
       return newArray;
     }
+  },
+  created: function() {
+    this.newRound();
   }
 });

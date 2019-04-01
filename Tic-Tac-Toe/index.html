@@ -143,7 +143,7 @@
         </p>
         <p class="mb-1">
           Type of play:
-          <select v-model="type">
+          <select v-model="type" @change="newRound">
             <option value="HH">Human vs human</option>
             <option value="HC">Human vs computer</option>
             <option value="CH">Computer vs human</option>
