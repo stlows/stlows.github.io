@@ -27,7 +27,7 @@
               @mouseover="hoverInTile(0,0)"
               @mouseleave="hoverOutTile(0,0)"
             >
-              {{ board[0][0] }}
+              {{ getSymbol(board[0][0]) }}
             </td>
             <td
               id="t"
@@ -37,7 +37,7 @@
               @mouseover="hoverInTile(0,1)"
               @mouseleave="hoverOutTile(0,1)"
             >
-              {{ board[0][1] }}
+              {{ getSymbol(board[0][1]) }}
             </td>
             <td
               id="tr"
@@ -47,7 +47,7 @@
               @mouseover="hoverInTile(0,2)"
               @mouseleave="hoverOutTile(0,2)"
             >
-              {{ board[0][2] }}
+              {{ getSymbol(board[0][2]) }}
             </td>
           </tr>
           <tr>
@@ -59,7 +59,7 @@
               @mouseover="hoverInTile(1,0)"
               @mouseleave="hoverOutTile(1,0)"
             >
-              {{ board[1][0] }}
+              {{ getSymbol(board[1][0]) }}
             </td>
             <td
               id="m"
@@ -69,7 +69,7 @@
               @mouseover="hoverInTile(1,1)"
               @mouseleave="hoverOutTile(1,1)"
             >
-              {{ board[1][1] }}
+              {{ getSymbol(board[1][1]) }}
             </td>
             <td
               id="r"
@@ -79,7 +79,7 @@
               @mouseover="hoverInTile(1,2)"
               @mouseleave="hoverOutTile(1,2)"
             >
-              {{ board[1][2] }}
+              {{ getSymbol(board[1][2]) }}
             </td>
           </tr>
           <tr>
@@ -91,7 +91,7 @@
               @mouseover="hoverInTile(2,0)"
               @mouseleave="hoverOutTile(2,0)"
             >
-              {{ board[2][0] }}
+              {{ getSymbol(board[2][0]) }}
             </td>
             <td
               id="b"
@@ -101,7 +101,7 @@
               @mouseover="hoverInTile(2,1)"
               @mouseleave="hoverOutTile(2,1)"
             >
-              {{ board[2][1] }}
+              {{ getSymbol(board[2][1]) }}
             </td>
             <td
               id="br"
@@ -111,15 +111,15 @@
               @mouseover="hoverInTile(2,2)"
               @mouseleave="hoverOutTile(2,2)"
             >
-              {{ board[2][2] }}
+              {{ getSymbol(board[2][2]) }}
             </td>
           </tr>
         </table>
 
         <table id="scores" class="mb-1">
           <tr>
-            <td>{{ symbols[0] }} score</td>
-            <td>{{ symbols[1] }} score</td>
+            <td>{{ symbol0 }} score</td>
+            <td>{{ symbol1 }} score</td>
             <td>Ties</td>
           </tr>
           <tr>
@@ -136,9 +136,9 @@
         <p class="mb-1">
           Difficulty:
           <select v-model="difficulty">
-            <option value="1">Easy</option>
-            <option value="2">Medium</option>
-            <option value="3" disabled>Hard</option>
+            <option value=1>Easy</option>
+            <option value=2>Medium</option>
+            <option value=3>Hard</option>
           </select>
         </p>
         <p class="mb-1">
@@ -156,25 +156,28 @@
           </li>
         </ul>
         <div class="text-left">
-
-        <span class="info-btn mb-1" @click="showSettings = !showSettings">
-          Settings and info
-        </span>
-        <template v-if="showSettings">
-            <h3 class="mb-1">Info</h3>
-            <h5>Bot level 1</h5>
-            <p>Random</p>
-            <h5>Bot level 2</h5>
-            <p>Will win if possible</p>
-            <p>Will block a simple tic-tac-toe from opponent</p>
-            <h5>Bot level 3</h5>
-            <p>Will never loose</p>
-            <h3 class="mb-1">Settings</h3>
-
-            <p>Symbols:</p>
-            <input type="text" value="X" />
-          </div>
-        </template>
+          <span class="info-btn" @click="showSettings = !showSettings">
+            Settings and info
+          </span>
+          <template v-if="showSettings">
+            <div class="info">
+                <h3>Info</h3>
+                <h5>Bot level 1</h5>
+                <p>Random</p>
+                <h5>Bot level 2</h5>
+                <p>Will win if possible</p>
+                <p>Will block a simple tic-tac-toe from opponent</p>
+                <h5>Bot level 3</h5>
+                <p>Will never loose</p>
+            </div>
+            <div class="settings">
+                <h3>Settings</h3>
+                <label for="symbol0">Symbol 1:</label><input id="symbol0" type="text" :value="symbol0" />
+                <label for="symbol1">Symbol 2:</label><input id="symbol1" type="text" :value="symbol1" />
+                <label for="delay">Delay:</label><input id="delay" type="text" :value="delay" />
+            </div>
+            </div>
+          </template>
       </div>
     </div>
   </body>

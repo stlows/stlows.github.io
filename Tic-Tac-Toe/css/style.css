@@ -97,6 +97,39 @@ ul#logs li.log:last-of-type{
 .info-btn:hover{
   cursor: pointer;
 }
+.info, .settings {
+  color:#333;
+}
+.info h3, .settings h3 {
+  margin-top: 1em;
+  margin-bottom: .5em;
+}
+.info h5, .settings h5 {
+  margin-top: .5em;
+}
+.info p, .settings p {
+  font-style: italic;
+}
+
+.settings label{
+  display: inline;
+  margin-right: 1em;
+
+}
+.settings input[type=text]{
+  display: inline;
+  border:none;
+  border-bottom: 1px #2f418d solid;
+  padding-bottom: .2em;
+}
+.settings input[type=text]:focus{
+  outline: none;
+  border-bottom: 2px #3e4d8f solid;
+}
+
+.d-inline {
+  display: inline;
+}
 
 /*
 .diff-container,

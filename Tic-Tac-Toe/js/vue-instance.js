@@ -13,13 +13,116 @@ var tieStyle = {
   backgroundColor: "red",
   color: "white"
 };
+function isSameBoard(board1, bord2) {
+  for (var i = 0; i < 3; i++) {
+    for (var j = 0; j < 3; j++) {
+      if (board1[i][j] !== bord2[i][j]) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function optimalMove(board, myId, oponentId) {
+  // Si on commence
+  console.log({ board, myId, oponentId });
+  // 1st move
+  if (isSameBoard(board, [["", "", ""], ["", "", ""], ["", "", ""]]))
+    return { i: 1, j: 1 };
+  // 3rd move
+  if (isSameBoard(board, [[oponentId, "", ""], ["", myId, ""], ["", "", ""]]))
+    return { i: 2, j: 2 };
+  if (isSameBoard(board, [["", oponentId, ""], ["", myId, ""], ["", "", ""]]))
+    return { i: 2, j: 0 };
+  if (isSameBoard(board, [["", "", oponentId], ["", myId, ""], ["", "", ""]]))
+    return { i: 2, j: 0 };
+  if (isSameBoard(board, [["", "", ""], [oponentId, myId, ""], ["", "", ""]]))
+    return { i: 2, j: 2 };
+  if (isSameBoard(board, [["", "", ""], ["", myId, oponentId], ["", "", ""]]))
+    return { i: 0, j: 0 };
+  if (isSameBoard(board, [["", "", ""], ["", myId, ""], [oponentId, "", ""]]))
+    return { i: 0, j: 2 };
+  if (isSameBoard(board, [["", "", ""], ["", myId, ""], ["", oponentId, ""]]))
+    return { i: 0, j: 2 };
+  if (isSameBoard(board, [["", "", ""], ["", myId, ""], ["", "", oponentId]]))
+    return { i: 0, j: 0 };
+
+  // 5th move
+  if (
+    isSameBoard(board, [
+      [oponentId, "", ""],
+      ["", myId, ""],
+      ["", oponentId, myId]
+    ])
+  )
+    return { i: 0, j: 2 };
+  if (
+    isSameBoard(board, [
+      [oponentId, "", ""],
+      ["", myId, oponentId],
+      ["", "", myId]
+    ])
+  )
+    return { i: 2, j: 0 };
+  if (
+    isSameBoard(board, [
+      ["", "", oponentId],
+      [oponentId, myId, ""],
+      [myId, "", ""]
+    ])
+  )
+    return { i: 2, j: 2 };
+  if (
+    isSameBoard(board, [
+      ["", "", oponentId],
+      ["", myId, ""],
+      [myId, oponentId, ""]
+    ])
+  )
+    return { i: 0, j: 0 };
+  if (
+    isSameBoard(board, [
+      ["", "", myId],
+      ["", myId, oponentId],
+      [oponentId, "", ""]
+    ])
+  )
+    return { i: 0, j: 0 };
+  if (
+    isSameBoard(board, [
+      ["", oponentId, myId],
+      ["", myId, ""],
+      [oponentId, "", ""]
+    ])
+  )
+    return { i: 2, j: 2 };
+  if (
+    isSameBoard(board, [
+      [myId, oponentId, ""],
+      ["", myId, ""],
+      ["", "", oponentId]
+    ])
+  )
+    return { i: 2, j: 0 };
+  if (
+    isSameBoard(board, [
+      [myId, "", ""],
+      [oponentId, myId, ""],
+      ["", "", oponentId]
+    ])
+  )
+    return { i: 0, j: 2 };
+
+  return null;
+}
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 var app = new Vue({
   el: "#app",
   data: {
-    symbols: ["X", "O"],
+    symbol0: "X",
+    symbol1: "O",
     scores: [0, 0],
     tiesCount: 0,
     board: [["", "", ""], ["", "", ""], ["", "", ""]],
@@ -31,25 +134,29 @@ var app = new Vue({
     logs: [],
     disableAll: false,
     currentPlayerId: 0,
-    myDebug: false,
-    difficulty: 2,
-    type: "HC",
+    myDebug: true,
+    difficulty: 3,
+    type: "CH",
     timeoutId: null,
     delay: 300,
     showSettings: false
   },
   methods: {
+    getSymbol(id) {
+      if (id === "") return "";
+      return id === 0 ? this.symbol0 : this.symbol1;
+    },
     currentPlayer() {
-      return this.symbols[this.currentPlayerId];
+      return this.getSymbol(this.currentPlayerId);
     },
     otherPlayer() {
-      return this.symbols[this.nextPlayerId()];
+      return this.getSymbol(this.otherPlayerId());
     },
-    nextPlayerId() {
+    otherPlayerId() {
       return (this.currentPlayerId + 1) % 2;
     },
     nextPlayer() {
-      this.currentPlayerId = this.nextPlayerId();
+      this.currentPlayerId = this.otherPlayerId();
     },
     setValue(x, y, val) {
       var newLine = this.board[x];
@@ -63,11 +170,12 @@ var app = new Vue({
     },
     setTile(x, y) {
       if (this.disableAll) return;
-      this.setValue(x, y, this.currentPlayer());
+      if (this.board[x][y] === this.otherPlayerId()) return;
+      this.setValue(x, y, this.currentPlayerId);
       this.setStyle(x, y, defaultStyle);
       var ttt = this.checkTicTacToe(this.board);
-      if (ttt != null) {
-        if (ttt == "tie") {
+      if (ttt !== null) {
+        if (ttt === "tie") {
           this.tie();
         } else {
           this.win(ttt);
@@ -88,7 +196,7 @@ var app = new Vue({
       this.logs.splice(0, 0, msg);
     },
     win(ttt) {
-      this.log(ttt.symbol + " wins the round.");
+      this.log(this.getSymbol(ttt.id) + " wins the round.");
       this.scores[this.currentPlayerId]++;
       this.disableAll = true;
       this.colorWinner(ttt.tiles);
@@ -107,13 +215,13 @@ var app = new Vue({
     },
     hoverInTile(x, y) {
       if (this.disableAll) return;
-      if (this.board[x][y] != "") return;
-      this.setValue(x, y, this.currentPlayer());
+      if (this.board[x][y] !== "") return;
+      this.setValue(x, y, this.currentPlayerId);
       this.setStyle(x, y, hoverStyle);
     },
     hoverOutTile(x, y) {
       if (this.disableAll) return;
-      if (this.styles[x][y] != hoverStyle) return;
+      if (this.styles[x][y] !== hoverStyle) return;
       this.setValue(x, y, "");
       this.setStyle(x, y, defaultStyle);
     },
@@ -150,7 +258,7 @@ var app = new Vue({
       var count = 0;
       for (var i = 0; i < 3; i++) {
         for (var j = 0; j < 3; j++) {
-          if (this.board[i][j] != "") {
+          if (this.board[i][j] !== "") {
             count++;
           }
         }
@@ -169,46 +277,46 @@ var app = new Vue({
       var c9 = board[2][2];
 
       // Horizontal
-      if ((c1 != "") & (c1 == c2) & (c2 == c3)) {
-        return { tiles: [[0, 0], [0, 1], [0, 2]], symbol: c1 };
+      if ((c1 !== "") & (c1 === c2) & (c2 === c3)) {
+        return { tiles: [[0, 0], [0, 1], [0, 2]], id: c1 };
       }
-      if ((c4 != "") & (c4 == c5) & (c4 == c6)) {
-        return { tiles: [[1, 0], [1, 1], [1, 2]], symbol: c4 };
+      if ((c4 !== "") & (c4 === c5) & (c4 === c6)) {
+        return { tiles: [[1, 0], [1, 1], [1, 2]], id: c4 };
       }
-      if ((c7 != "") & (c7 == c8) & (c7 == c9)) {
-        return { tiles: [[2, 0], [2, 1], [2, 2]], symbol: c7 };
+      if ((c7 !== "") & (c7 === c8) & (c7 === c9)) {
+        return { tiles: [[2, 0], [2, 1], [2, 2]], id: c7 };
       }
 
       // Vertical
-      if ((c1 != "") & (c1 == c4) & (c1 == c7)) {
-        return { tiles: [[0, 0], [1, 0], [2, 0]], symbol: c1 };
+      if ((c1 !== "") & (c1 === c4) & (c1 === c7)) {
+        return { tiles: [[0, 0], [1, 0], [2, 0]], id: c1 };
       }
-      if ((c2 != "") & (c2 == c5) & (c2 == c8)) {
-        return { tiles: [[0, 1], [1, 1], [2, 1]], symbol: c2 };
+      if ((c2 !== "") & (c2 === c5) & (c2 === c8)) {
+        return { tiles: [[0, 1], [1, 1], [2, 1]], id: c2 };
       }
-      if ((c3 != "") & (c3 == c6) & (c3 == c9)) {
-        return { tiles: [[0, 2], [1, 2], [2, 2]], symbol: c3 };
+      if ((c3 !== "") & (c3 === c6) & (c3 === c9)) {
+        return { tiles: [[0, 2], [1, 2], [2, 2]], id: c3 };
       }
 
       // Diagonal
-      if ((c1 != "") & (c1 == c5) & (c1 == c9)) {
-        return { tiles: [[0, 0], [1, 1], [2, 2]], symbol: c5 };
+      if ((c1 !== "") & (c1 === c5) & (c1 === c9)) {
+        return { tiles: [[0, 0], [1, 1], [2, 2]], id: c5 };
       }
-      if ((c3 != "") & (c3 == c5) & (c3 == c7)) {
-        return { tiles: [[0, 2], [1, 1], [2, 0]], symbol: c5 };
+      if ((c3 !== "") & (c3 === c5) & (c3 === c7)) {
+        return { tiles: [[0, 2], [1, 1], [2, 0]], id: c5 };
       }
 
-      if (this.count() == 9) {
+      if (this.count() === 9) {
         return "tie";
       }
 
       return null;
     },
     isBot(id) {
-      return this.type.split("")[id] == "C";
+      return this.type.split("")[id] === "C";
     },
     botMove() {
-      switch (this.difficulty) {
+      switch (parseInt(this.difficulty)) {
         case 1:
           this.botLevel1Move();
           break;
@@ -216,7 +324,7 @@ var app = new Vue({
           this.botLevel2Move();
           break;
         case 3:
-          alert("Bot level 3 moves.");
+          this.botLevel3Move();
           break;
       }
     },
@@ -224,7 +332,7 @@ var app = new Vue({
       var availableTiles = [];
       for (var i = 0; i < 3; i++) {
         for (var j = 0; j < 3; j++) {
-          if (board[i][j] == "") {
+          if (board[i][j] === "") {
             availableTiles.push({ i, j });
           }
         }
@@ -244,9 +352,9 @@ var app = new Vue({
       for (var x = 0; x < availableTiles.length; x++) {
         var tile = availableTiles[x];
         // Check if bot can win
-        boardCopy[tile.i][tile.j] = this.currentPlayer();
+        boardCopy[tile.i][tile.j] = this.currentPlayerId;
         var ttt = this.checkTicTacToe(boardCopy);
-        if (ttt != null && ttt.symbol == this.currentPlayer()) {
+        if (ttt !== null && ttt.id === this.currentPlayerId) {
           this.debug("Bot played to win");
           this.setTile(tile.i, tile.j);
           return;
@@ -256,9 +364,9 @@ var app = new Vue({
       for (var x = 0; x < availableTiles.length; x++) {
         var tile = availableTiles[x];
         // Check if bot can block a win
-        boardCopy[tile.i][tile.j] = this.otherPlayer();
+        boardCopy[tile.i][tile.j] = this.otherPlayerId();
         var ttt = this.checkTicTacToe(boardCopy);
-        if (ttt != null && ttt.symbol == this.otherPlayer()) {
+        if (ttt !== null && ttt.id === this.otherPlayerId()) {
           this.debug("Bot played to block a win");
           this.setTile(tile.i, tile.j);
           return;
@@ -266,6 +374,22 @@ var app = new Vue({
         boardCopy[tile.i][tile.j] = "";
       }
       this.botLevel1Move();
+    },
+    botLevel3Move() {
+      var boardCopy = this.getBoardCopy();
+
+      var optimal = optimalMove(
+        boardCopy,
+        this.currentPlayerId,
+        this.otherPlayerId()
+      );
+      console.log(optimal);
+      if (optimal === null) {
+        this.botLevel2Move();
+      } else {
+        this.debug("Bot played optimally");
+        this.setTile(optimal.i, optimal.j);
+      }
     },
     checkWinPossibility() {},
     checkBlockPossibility() {},
