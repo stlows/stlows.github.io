@@ -112,6 +112,72 @@ function optimalMove(board, myId, oponentId) {
   )
     return { i: 0, j: 2 };
 
+  // 7th move
+  if (
+    isSameBoard(board, [
+      [oponentId, myId, oponentId],
+      ["", myId, ""],
+      ["", oponentId, myId]
+    ])
+  )
+    return { i: 1, j: 0 };
+  if (
+    isSameBoard(board, [
+      [oponentId, "", ""],
+      [myId, myId, oponentId],
+      [oponentId, "", myId]
+    ])
+  )
+    return { i: 0, j: 1 };
+  if (
+    isSameBoard(board, [
+      ["", "", oponentId],
+      [oponentId, myId, myId],
+      [myId, "", oponentId]
+    ])
+  )
+    return { i: 2, j: 1 };
+  if (
+    isSameBoard(board, [
+      [oponentId, myId, oponentId],
+      ["", myId, ""],
+      [myId, "", oponentId]
+    ])
+  )
+    return { i: 1, j: 2 };
+  if (
+    isSameBoard(board, [
+      [myId, "", oponentId],
+      [oponentId, myId, myId],
+      ["", "", oponentId]
+    ])
+  )
+    return { i: 2, j: 1 };
+  if (
+    isSameBoard(board, [
+      [myId, oponentId, ""],
+      ["", myId, ""],
+      [oponentId, myId, oponentId]
+    ])
+  )
+    return { i: 1, j: 2 };
+  if (
+    isSameBoard(board, [
+      ["", oponentId, myId],
+      ["", myId, ""],
+      [oponentId, myId, oponentId]
+    ])
+  )
+    return { i: 1, j: 0 };
+  if (
+    isSameBoard(board, [
+      [oponentId, "", myId],
+      [myId, myId, oponentId],
+      [oponentId, "", ""]
+    ])
+  )
+    return { i: 0, j: 1 };
+
   return null;
 }
 function getRandomInt(max) {
