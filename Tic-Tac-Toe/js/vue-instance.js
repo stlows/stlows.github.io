@@ -103,7 +103,7 @@ var winningLines = [
   [{ i: 0, j: 1 }, { i: 1, j: 1 }, { i: 2, j: 1 }], // center
   [{ i: 0, j: 2 }, { i: 1, j: 2 }, { i: 2, j: 2 }], // right
   [{ i: 0, j: 0 }, { i: 1, j: 1 }, { i: 2, j: 2 }], // diago 1
-  [{ i: 1, j: 2 }, { i: 1, j: 1 }, { i: 0, j: 2 }] // diago 2
+  [{ i: 0, j: 2 }, { i: 1, j: 1 }, { i: 2, j: 0 }] // diago 2
 ];
 
 // BOARD COMPARE
@@ -391,6 +391,7 @@ var app = new Vue({
     },
     botLevel2Move() {
       var winPossibility = this.checkWinPossibility(this.currentPlayerId);
+      console.log(winPossibility);
       if (winPossibility !== null) {
         return {
           explanation: "Bot played to win",
