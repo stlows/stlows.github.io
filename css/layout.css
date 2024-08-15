@@ -1,0 +1,33 @@
+.main {
+  max-width: 900px;
+  margin: 170px auto;
+}
+
+header {
+  max-width: 700px;
+  margin: auto;
+}
+
+section {
+  border-radius: 5px;
+  padding: 2em 4em;
+  margin-top: 5em;
+  background-color: rgb(31, 31, 31);
+}
+
+@media only screen and (max-width: 600px) {
+  section {
+    padding: 1em;
+  }
+}
+
+.section--inner>div {
+  margin-bottom: 2em;
+}
+
+@media only screen and (max-width: 600px) {
+  .main {
+    margin: 30px auto;
+    padding: 15px;
+  }
+}
