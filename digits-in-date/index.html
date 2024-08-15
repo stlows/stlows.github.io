@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Different digits in a date</title>
+  <script src="https://unpkg.com/vue"></script>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+</head>
+<body>
+
+  <div id="app">
+	<h1>Digits in date</h1>
+
+	<div class="form-group">
+		<label for="dateFrom">Date from: </label>
+		<input type="date" id="dateFrom" v-model="dateFromI">
+	</div>
+	<div class="form-group">
+		<label for="dateTo">Date to: </label>
+		<input type="date" id="dateTo" v-model="dateToI">
+	</div>
+	<table>
+		<thead>
+			<tr>
+				<th># digits</th>
+				<th style="width: 500px"># dates</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr v-for="i in 8">
+				<td>{{ i }}</td>
+				<td v-bind:style="styleObject(histogram[i])">{{ histogram[i] }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<span class="center">Total dates: <b>{{ dates.length }}</b></span>
+
+	<hr>
+	<button class="center" v-on:click="showData = !showData">{{ showData ? "Hide" : "Show" }} data</button>
+	<hr>
+
+	<div v-if="showData">
+
+		<label for="recordsToShowFrom">Show results from: </label><input type="number" min="1" id="recordsToShowFrom" v-model="recordsToShowFrom">
+		<label for="recordsToShowTo">to: </label><input type="number" min="1" id="recordsToShowTo" v-model="recordsToShowTo">
+
+		<p>Total filtered dates: <b>{{ filteredDates.length }}</b></p>
+
+		<table id="datesTable">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Date</th>
+					<th>Unique</th>
+					<th># digits<br><label for="filterNoDigits">Filter: </label><input type="number" min="0" max="8" id="filterNoDigits" v-model="filterNoDigits"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-if="filteredDates.length == 0">
+					<td colspan="4">Aucune donnée</td>
+				</tr>
+				<tr v-else v-for="(d, i) in filteredDates.slice(recordsToShowFrom - 1,recordsToShowTo)">
+					<td>{{ i + 1 }}</td>
+					<td>{{ datePretty(d) }}</td>
+					<td>{{ uniqueChar(d).sort() }}</td>
+					<td>{{ uniqueChar(d).length }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+			
+  </div>
+
+  <script>
+		
+		var app = new Vue({
+      el: '#app',
+      data: {
+        dateFromI: '2019-02-01',
+				dateToI: '2100-12-31',
+				showData: true,
+				filterNoDigits: 2,
+				recordsToShowFrom: 1,
+				recordsToShowTo: 200,
+				styleObject: function(val) {
+					var count = this.dates.length;
+					var base = 700;
+					var width = Math.floor(base * val / count);
+					return {
+						boxShadow: "inset " + width + "px 0 #c6ccf1"
+					}
+				},		
+				dateToString: function(d){
+					return (d.getYear() + 1900).toString() + (d.getMonth() + 1).toString().padStart(2, "0") + d.getDate().toString().padStart(2, "0");
+				},
+				datePretty: function(str){
+					return str.substr(0,4) + "-" + str.substr(4,2) + "-" + str.substr(6,2);
+				},
+				daysInMonth: function(month,year) {
+  					return new Date(year, month, 0).getDate();
+				},
+				onlyUnique: function(value, index, self) { 
+    				return self.indexOf(value) === index;
+				},
+				uniqueChar: function(str){
+					return str.split("").filter( this.onlyUnique );
+				}
+			},
+	  	computed: {
+				dateFrom: function () {
+					return new Date(this.dateFromI.substr(0,4), this.dateFromI.substr(5,2) - 1, this.dateFromI.substr(8,2))
+				},
+				dateTo: function () {
+					return new Date(this.dateToI.substr(0,4), this.dateToI.substr(5,2) - 1, this.dateToI.substr(8,2))
+				},
+				dates: function() {
+					var r = [];
+					for(var y = this.dateFrom.getYear(); y <= this.dateTo.getYear(); y++){
+						for(var m = 0; m < 12; m++){
+							for(var d = 1; d <= this.daysInMonth(m + 1, y ); d++){
+								r.push((y + 1900).toString() + (m + 1).toString().padStart(2, "0") + d.toString().padStart(2, "0"));
+							}
+						}
+					}	
+					return r;
+				},
+				filteredDates: function(){
+					if(this.filterNoDigits === "")
+						return this.dates;
+					return this.dates.filter(d => 
+						this.uniqueChar(d).length == this.filterNoDigits
+					);
+				},
+				histogram: function(){
+					var histo = {};
+					for(var i = 1; i <= 8; i++){
+						histo[i] = this.dates.filter(d => this.uniqueChar(d).length === i).length;
+					}
+					return histo;
+				}
+			}
+    })	
+  </script>
+</body>
+</html>

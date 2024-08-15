@@ -1,0 +1,186 @@
+<html>
+  <head>
+    <title>Tic-Tac-Toe</title>
+
+    <link href="css/style.css" rel="stylesheet" />
+    <!--<script src="js/vue.js"></script>-->
+    <script src="js/vue.min.js"></script>
+    <script defer src="js/vue-instance.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css?family=Lato"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="container">
+        <h1>Tic Tac Toe <span id="turn"></span></h1>
+        <h4 class="mb-1">To play: {{ currentPlayer() }}</h4>
+        <table id="board">
+          <tr>
+            <td
+              id="tl"
+              class="case"
+              :style="styles[0][0]"
+              @click="setTile(0, 0)"
+              @mouseover="hoverInTile(0,0)"
+              @mouseleave="hoverOutTile(0,0)"
+            >
+              {{ getSymbol(board[0][0]) }}
+            </td>
+            <td
+              id="t"
+              class="case"
+              :style="styles[0][1]"
+              @click="setTile(0, 1)"
+              @mouseover="hoverInTile(0,1)"
+              @mouseleave="hoverOutTile(0,1)"
+            >
+              {{ getSymbol(board[0][1]) }}
+            </td>
+            <td
+              id="tr"
+              class="case"
+              :style="styles[0][2]"
+              @click="setTile(0, 2)"
+              @mouseover="hoverInTile(0,2)"
+              @mouseleave="hoverOutTile(0,2)"
+            >
+              {{ getSymbol(board[0][2]) }}
+            </td>
+          </tr>
+          <tr>
+            <td
+              id="l"
+              class="case"
+              :style="styles[1][0]"
+              @click="setTile(1, 0)"
+              @mouseover="hoverInTile(1,0)"
+              @mouseleave="hoverOutTile(1,0)"
+            >
+              {{ getSymbol(board[1][0]) }}
+            </td>
+            <td
+              id="m"
+              class="case"
+              :style="styles[1][1]"
+              @click="setTile(1, 1)"
+              @mouseover="hoverInTile(1,1)"
+              @mouseleave="hoverOutTile(1,1)"
+            >
+              {{ getSymbol(board[1][1]) }}
+            </td>
+            <td
+              id="r"
+              class="case"
+              :style="styles[1][2]"
+              @click="setTile(1, 2)"
+              @mouseover="hoverInTile(1,2)"
+              @mouseleave="hoverOutTile(1,2)"
+            >
+              {{ getSymbol(board[1][2]) }}
+            </td>
+          </tr>
+          <tr>
+            <td
+              id="bl"
+              class="case"
+              :style="styles[2][0]"
+              @click="setTile(2, 0)"
+              @mouseover="hoverInTile(2,0)"
+              @mouseleave="hoverOutTile(2,0)"
+            >
+              {{ getSymbol(board[2][0]) }}
+            </td>
+            <td
+              id="b"
+              class="case"
+              :style="styles[2][1]"
+              @click="setTile(2, 1)"
+              @mouseover="hoverInTile(2,1)"
+              @mouseleave="hoverOutTile(2,1)"
+            >
+              {{ getSymbol(board[2][1]) }}
+            </td>
+            <td
+              id="br"
+              class="case"
+              :style="styles[2][2]"
+              @click="setTile(2, 2)"
+              @mouseover="hoverInTile(2,2)"
+              @mouseleave="hoverOutTile(2,2)"
+            >
+              {{ getSymbol(board[2][2]) }}
+            </td>
+          </tr>
+        </table>
+
+        <table id="scores" class="mb-1">
+          <tr>
+            <td>{{ symbol0 }} score</td>
+            <td>{{ symbol1 }} score</td>
+            <td>Ties</td>
+          </tr>
+          <tr>
+            <td>{{ scores[0] }}</td>
+            <td>{{ scores[1] }}</td>
+            <td>{{ tiesCount }}</td>
+          </tr>
+        </table>
+
+        <button @click="newRound">New Round</button>
+        <button @click="newGame">New Game</button>
+
+        <hr class="mb-1 mt-1" />
+
+        <p class="mb-1">
+          Difficulty:
+          <select v-model="difficulty">
+            <option value=1>Easy</option>
+            <option value=2>Medium</option>
+            <option value=3>Hard</option>
+          </select>
+        </p>
+        <p class="mb-1">
+          Type of play:
+          <select v-model="type" @change="newRound">
+            <option value="HH">Human vs human</option>
+            <option value="HC">Human vs computer</option>
+            <option value="CH">Computer vs human</option>
+            <option value="CC">Computer vs computer</option>
+          </select>
+        </p>
+        <ul id="logs" class="mb-1">
+          <li v-for="log in logs" class="log">
+            {{ log }}
+          </li>
+        </ul>
+        <div class="text-left">
+          <span class="info-btn" @click="showSettings = !showSettings">
+            Settings and info
+          </span>
+          <template v-if="showSettings">
+            <div class="info">
+                <h3>Info</h3>
+                <p>Made with Vue.js</p>
+                <p>Source code on <a href="https://github.com/stlows/Tic-Tac-Toe">github</a></p>
+                <h5>Bot level 1</h5>
+                <p>Random</p>
+                <h5>Bot level 2</h5>
+                <p>Will win if possible</p>
+                <p>Will block a simple tic-tac-toe from opponent</p>
+                <h5>Bot level 3</h5>
+                <p>Will never loose</p>
+            </div>
+            
+            <div class="settings">
+                <h3>Settings</h3>
+                <input type="checkbox" id="withExplanation" v-model="myDebug" /><label for="withExplanation">Explanations in console:</label>
+            </div>
+            </div>
+          </template>
+      </div>
+    </div>
+  </body>
+</html>
