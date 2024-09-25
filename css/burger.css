@@ -1,0 +1,26 @@
+.burger {
+  margin: auto;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  cursor: pointer;
+}
+
+.burger .line {
+  width: 30px;
+  height: 2px;
+  background-color: white;
+  position: relative;
+}
+
+.burger .line1 {
+  top: 3px;
+}
+
+.burger .line2 {
+  top: 9px;
+}
+
+.burger .line3 {
+  top: 15px;
+}

@@ -16,19 +16,30 @@ nav ul li a {
 }
 
 nav.mainNav {
-  opacity: 0.3;
+  opacity: 1;
   max-width: 900px;
-  position: sticky;
+  position: fixed;
   top: 0;
+  right: 0;
   background-color: black;
+  min-width: 60px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  border-bottom-left-radius: 100px;
+  padding: 0;
 }
+
 
 nav.mainNav:hover {
   opacity: 1;
 }
 
-@media only screen and (max-width: 900px) {
-  nav.mainNav {
-    display: none;
-  }
+nav.mainNav ul {
+  flex-direction: column;
+  display: none;
+}
+
+nav.mainNav ul.active {
+  display: block;
 }
